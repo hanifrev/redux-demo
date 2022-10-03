@@ -2,12 +2,28 @@ const redux = require("redux");
 const createStore = redux.createStore;
 
 const CAKE_ORDERED = "CAKE_ORDERED";
+const CAKE_RESTOCKED = "CAKE_RESTOCKED";
+const JUICE_RESTOCKED = "JUICE_RESTOCKED";
 
 // action
 function orderCake() {
   return {
     type: CAKE_ORDERED,
-    quantity: 1,
+    payload: 1,
+  };
+}
+
+function restockCake(qty = 1) {
+  return {
+    type: CAKE_RESTOCKED,
+    payload: qty,
+  };
+}
+
+function juiceRestock(qty = 1) {
+  return {
+    type: JUICE_RESTOCKED,
+    payload: qty,
   };
 }
 
@@ -27,6 +43,17 @@ const reducer = (state = initialState, action) => {
         numOfCakes: state.numOfCakes - 1,
         juice: state.juice - 1,
       };
+    case CAKE_RESTOCKED:
+      return {
+        ...state,
+        numOfCakes: state.numOfCakes + action.payload,
+      };
+    case JUICE_RESTOCKED: {
+      return {
+        ...state,
+        juice: state.juice + action.payload,
+      };
+    }
     default:
       return state;
   }
@@ -48,6 +75,8 @@ const unsubscribe = store.subscribe(() =>
 store.dispatch(orderCake());
 store.dispatch(orderCake());
 store.dispatch(orderCake());
+store.dispatch(restockCake(7));
+store.dispatch(juiceRestock(2));
 
 // Handles unregistering of listeners via the function returned by subscribe(listener) / unsubscribe
 unsubscribe();
