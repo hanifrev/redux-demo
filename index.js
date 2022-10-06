@@ -1,7 +1,11 @@
 const redux = require("redux");
 const createStore = redux.createStore;
 const bindActionCreators = redux.bindActionCreators;
+const applyMiddleware = redux.applyMiddleware;
 const combineReducers = redux.combineReducers;
+
+const reduxLogger = require("redux-logger");
+const logger = reduxLogger.createLogger();
 
 // action
 const CAKE_ORDERED = "CAKE_ORDERED";
@@ -95,15 +99,16 @@ const rootReducer = combineReducers({
 });
 
 // hold app state
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(logger));
 
 // allow access to state via getState()
 console.log("initial state", store.getState());
 
 // register listerner via subscribe(listener), allow the app to subscribe the changes in the store
 // store.subscribe(() => console.log("update state", store.getState()));
-const unsubscribe = store.subscribe(() =>
-  console.log("update state", store.getState())
+const unsubscribe = store.subscribe(
+  () => {}
+  // console.log("update state", store.getState())
 );
 
 // allow state to be updated via dispatch(action)
