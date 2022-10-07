@@ -2,6 +2,10 @@ const redux = require("redux");
 const createStore = redux.createStore;
 const bindActionCreators = redux.bindActionCreators;
 const combineReducers = redux.combineReducers;
+const applyMiddleware = redux.applyMiddleware;
+
+const reduxLogger = require("redux-logger");
+const logger = reduxLogger.createLogger();
 
 const EMPEROR_ORDER = "EMPEROR_ORDER";
 const EMPEROR_RESTOCK = "EMPEROR_RESTOCK";
@@ -84,12 +88,12 @@ const rootReducer = combineReducers({
   opeth: opethReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(logger));
 
 console.log("initial state", store.getState());
 
 const unsubscribe = store.subscribe(() => {
-  console.log("update stock", store.getState());
+  // console.log("update stock", store.getState());
 });
 
 // store.dispatch(orderEmperor(2));
