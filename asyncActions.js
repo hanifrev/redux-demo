@@ -53,21 +53,30 @@ const reducer = (state = initialState, action) => {
         users: [],
         error: action.payload,
       };
+    default:
+      return state;
   }
 };
 
 // with redux-thunk, action creator can return a function instead of an action object
 const fetchUsers = () => {
   return function (dispatch) {
+    dispatch(fetchUsersRequest());
     axios
       .get("https://jsonplaceholder.typicode.com/users")
       .then((res) => {
         const users = res.data.map((user) => user.id);
+        dispatch(fetchUsersSuccess(users));
       })
       .catch((error) => {
         // error message
+        dispatch(fetchUsersFailure(error.message));
       });
   };
 };
 
-const store = createStore(reducer, applyMiddleware(thunkMiddleware));
+const store = createStore(reducer, applyMiddleware(thunkMiddleware.default));
+store.subscribe(() => {
+  console.log(store.getState());
+});
+store.dispatch(fetchUsers());
